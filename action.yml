@@ -23,4 +23,4 @@ outputs:
     description: 'Predicate to indicate if user belongs to team'
 runs:
   using: 'node12'
-  main: 'index.js'
+  main: 'dist/index.js'

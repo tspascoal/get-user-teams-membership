@@ -4,7 +4,8 @@
   "description": "GitHub Action to get a list a user teams membership",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "ncc build input.js -o dist"
   },
   "keywords": [],
   "author": "Tiago Pascoal",
@@ -16,5 +17,8 @@
   "dependencies": {
     "@actions/core": "^1.2.4",
     "@actions/github": "^4.0.0"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.24.0"
   }
 }
