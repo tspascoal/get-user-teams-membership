@@ -1,0 +1,20 @@
+{
+  "name": "get-user-teams-membership",
+  "version": "1.0.0",
+  "description": "GitHub Action to get a list a user teams membership",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Tiago Pascoal",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tspascoal/get-user-teams-membership"
+  },
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/github": "^4.0.0"
+  }
+}
