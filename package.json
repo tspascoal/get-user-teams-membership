@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npx ncc build src/index.js -o dist"
+    "build": "npx ncc build src/index.js -m -o dist"
   },
   "keywords": [],
   "author": "Tiago Pascoal",
