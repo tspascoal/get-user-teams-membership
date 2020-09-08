@@ -15,8 +15,11 @@ async function run() {
 
         console.log(`Getting teams for ${username} in org ${organization}. Will check if belongs to ${team}`)
 
-        const query = `query($cursor: String, $org: String!, $userLogins: [String!])  {
-            organization(login: $org) {      
+        const query = `query($cursor: String, $org: String!, $userLogins: [String!], $username: String!)  {
+            user(login: $username) {
+                id
+            }
+            organization(login: $org) {
               teams (first:1, userLogins: $userLogins, after: $cursor) { 
                   nodes {
                     name
@@ -29,25 +32,27 @@ async function run() {
             }
         }`
 
-        let org
+        let data
         let teams = []
         let cursor = null
-        
+
+        // We need to check if the user exists, because if it doesn't exist then all teams in the org
+        // are returned. If user doesn't exist graphql will throw an exception
         // Paginate
         do {
-            org = await api.graphql(query, {
+            data = await api.graphql(query, {
                 "cursor": cursor,
                 "org": organization,
-                "userLogins": [username]
+                "userLogins": [username],
+                "username": username
             })
 
-            teams = teams.concat(org.organization.teams.nodes.map((val) => {
+            teams = teams.concat(data.organization.teams.nodes.map((val) => {
                 return val.name
             }))
-            
-            cursor = org.organization.teams.pageInfo.endCursor   
 
-        } while (org.organization.teams.pageInfo.hasNextPage)
+            cursor = data.organization.teams.pageInfo.endCursor
+        } while (data.organization.teams.pageInfo.hasNextPage)
 
         let isTeamMember = teams.some((teamName) => {
             return team.toLowerCase() === teamName.toLowerCase()
@@ -57,6 +62,7 @@ async function run() {
         core.setOutput("isTeamMember", isTeamMember)
 
     } catch (error) {
+        console.log(error)
         core.setFailed(error.message)
     }
 }
