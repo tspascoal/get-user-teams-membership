@@ -15,7 +15,7 @@
     "url": "https://github.com/tspascoal/get-user-teams-membership"
   },
   "dependencies": {
-    "@actions/core": "^1.2.4",
+    "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0"
   },
   "devDependencies": {
