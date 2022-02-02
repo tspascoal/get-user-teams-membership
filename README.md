@@ -61,7 +61,7 @@ Checks if the user who triggered the worfklow (actor) doesn't belong to the `oct
      username: ${{ github.actor }}
      team: 'octocats'
      GITHUB_TOKEN: ${{ secrets.PAT }}
-- if: ${{ !steps.checkUserMember.outputs.isTeamMember }}
+- if: ${{ steps.checkUserMember.outputs.isTeamMember == 'false' }}
   ...  
 ```
 
