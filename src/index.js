@@ -1,5 +1,5 @@
-const core = require('@actions/core')
-const github = require('@actions/github')
+import { getInput, setOutput, setFailed } from '@actions/core'
+import { getOctokit, context } from '@actions/github'
 
 run()
 
@@ -7,11 +7,11 @@ async function run() {
 
     try {
 
-        const api = github.getOctokit(core.getInput("GITHUB_TOKEN", { required: true }), {})
+        const api = getOctokit(getInput("GITHUB_TOKEN", { required: true }), {})
 
-        const organization = core.getInput("organization") || context.repo.owner
-        const username = core.getInput("username")
-        const team = core.getInput("team")
+        const organization = getInput("organization") || context.repo.owner
+        const username = getInput("username")
+        const team = getInput("team")
 
         console.log(`Getting teams for ${username} in org ${organization}. Will check if belongs to ${team}`)
 
@@ -58,11 +58,11 @@ async function run() {
             return team.toLowerCase() === teamName.toLowerCase()
         })
 
-        core.setOutput("teams", teams)
-        core.setOutput("isTeamMember", isTeamMember)
+        setOutput("teams", teams)
+        setOutput("isTeamMember", isTeamMember)
 
     } catch (error) {
         console.log(error)
-        core.setFailed(error.message)
+        setFailed(error.message)
     }
 }
