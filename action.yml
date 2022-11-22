@@ -22,5 +22,5 @@ outputs:
   isTeamMember:
     description: 'Predicate to indicate if user belongs to team'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
