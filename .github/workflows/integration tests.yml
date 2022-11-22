@@ -1,0 +1,92 @@
+name: integration tests
+
+on:
+  pull_request:
+    branches: 'master'
+  push:
+    branches: 'master'
+  
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      user: tspascoal
+      check-team: 'Team-1'
+      check-not-team: 'dummy2314332'
+      failed: "false"
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: build
+        run: | 
+          npm install
+          npm run build
+      
+      - uses: ./
+
+      - name: Get Token
+        id: get_workflow_token
+        uses: peter-murray/workflow-application-token-action@v1
+        with:
+          organization: get-user-teams-membership-tests
+          application_id: ${{ secrets.APPLICATION_ID }}
+          application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
+
+      - name: Get Teams
+        uses: ./
+        id: get-teams
+        with:
+          username: tspascoal
+          GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+          
+      - name: validate teams
+        run: |
+            echo "found teams ${{ steps.get-teams.outputs.teams }}"
+            numberTeams=$(echo '${{ steps.get-teams.outputs.teams}}' | jq length)
+            if [ $numberTeams != 4 ]; then
+              echo "Expected 4 team  membership for ${{ env.user }}" >> $GITHUB_SUMMARY
+              failed="true"
+            fi
+
+            if diff \
+              < $(echo '["Team-1","Team-Secret","Parent","Child"]' | jq --sort-keys .) \
+              < $(echo '${{ steps.get-teams.outputs.teams }}' | jq --sort-keys .) ; then
+              
+              echo 'Teams mismatch ${{ steps.get-teams.outputs.teams }}' >> $GITHUB_SUMMARY
+              failed="true"
+            fi
+
+            echo "failed=$failed" >> $$GITHUB_ENV
+
+      - name: check if member of ${{ env.check-team }}
+        uses: tspascoal/get-user-teams-membership@v1
+        id: check-teams-success
+        with:
+          username: tspascoal
+          team: ${{ env.check-team }}
+          GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+          
+      - name: Not a team member? Fail
+        if: ${{ steps.check-teams-success.outputs.isTeamMember == 'false' }}
+        run: |
+          echo "failed=true" >> $$GITHUB_ENV       
+
+      - name: check if member of ${{ env.check-not-team }} should not be
+        uses: ./
+        id: check-not-team
+        with:
+          username: tspascoal
+          team: ${{ env.check-not-team }}
+          GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+          
+
+      - name: Dummy Team membership? Fail
+        if: ${{ steps.check-not-team.outputs.isTeamMember == 'true' }}
+        run: |
+          echo "failed=true" >> $$GITHUB_ENV
+
+      - name: Tests failed?
+        if: ${{ env.failed == 'true' }}
+        run:
+          exit 1
+          
