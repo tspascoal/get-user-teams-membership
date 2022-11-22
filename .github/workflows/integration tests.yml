@@ -59,7 +59,7 @@ jobs:
             echo "failed=$failed" >> $$GITHUB_ENV
 
       - name: check if member of ${{ env.check-team }}
-        uses: tspascoal/get-user-teams-membership@v1
+        uses: ./
         id: check-teams-success
         with:
           organization: ${{ env.organization }}
