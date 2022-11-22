@@ -37,7 +37,6 @@ jobs:
         with:
           organization: $ {{ organization }}
           username: tspascoal      
-          organization: 
           GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
           
       - name: validate teams
