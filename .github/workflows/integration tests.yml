@@ -14,6 +14,7 @@ jobs:
       check-team: 'Team-1'
       check-not-team: 'dummy2314332'
       failed: "false"
+      organization: get-user-teams-membership-tests
     steps:
       - uses: actions/checkout@v3
       
@@ -26,7 +27,7 @@ jobs:
         id: get_workflow_token
         uses: peter-murray/workflow-application-token-action@v1
         with:
-          organization: get-user-teams-membership-tests
+          organization: $ {{ organization }}
           application_id: ${{ secrets.APPLICATION_ID }}
           application_private_key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
 
@@ -34,7 +35,9 @@ jobs:
         uses: ./
         id: get-teams
         with:
-          username: tspascoal
+          organization: $ {{ organization }}
+          username: tspascoal      
+          organization: 
           GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
           
       - name: validate teams
@@ -60,6 +63,7 @@ jobs:
         uses: tspascoal/get-user-teams-membership@v1
         id: check-teams-success
         with:
+          organization: $ {{ organization }}
           username: tspascoal
           team: ${{ env.check-team }}
           GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
@@ -73,6 +77,7 @@ jobs:
         uses: ./
         id: check-not-team
         with:
+          organization: $ {{ organization }}
           username: tspascoal
           team: ${{ env.check-not-team }}
           GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
