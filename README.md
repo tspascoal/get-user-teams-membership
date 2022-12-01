@@ -29,6 +29,9 @@ In order to use this action you need to use a [personal access token]
 with `read:org` [scope](https://docs.github.com/en/developers/apps/scopes-for-oauth-apps#available-scopes) 
 (so the builtin in [GITHUB_TOKEN](https://docs.github.com/en/actions/configuring-and-managing-workflows/authenticating-with-the-github_token) is not enough)
 
+> **Warning** If you are using GitHub Enterprise Server, this version is only supported on GHES 3.4 or Later. Use v1 if you want to use it on an older GHES installation
+
+
 ## Scenarios
 
 - [Checks if user belongs to one team or another](#Checks-if-user-belongs-to-one-of-two-teams)
