@@ -53,16 +53,16 @@ and if not adds a label to the pull request to signal it's an external contribut
   ...  
 ```
 
-### Checks if user belongs to a given team
+### Checks if user belongs to a given team/s
 
-Checks if the user who triggered the worfklow (actor) doesn't belong to the `octocats` team
+Checks if the user who triggered the workflow (actor) doesn't belong to the `octocats` or `testing` team
 
 ```yaml
 -  uses: tspascoal/get-user-teams-membership@v2
    id: checkUserMember
    with:
      username: ${{ github.actor }}
-     team: 'octocats'
+     team: 'octocats,testing'
      GITHUB_TOKEN: ${{ secrets.PAT }}
 - if: ${{ steps.checkUserMember.outputs.isTeamMember == 'false' }}
   ...  

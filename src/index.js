@@ -11,9 +11,9 @@ async function run() {
 
         const organization = getInput("organization") || context.repo.owner
         const username = getInput("username")
-        const team = getInput("team")
+        const inputTeams = getInput("team").trim().toLowerCase().split(",").filter(team => team)
 
-        console.log(`Getting teams for ${username} in org ${organization}. Will check if belongs to ${team}`)
+        console.log(`Getting teams for ${username} in org ${organization}.${inputTeams.length ? ` Will check if belongs to one of [${inputTeams.join(",")}]` : ''}`)
 
         const query = `query($cursor: String, $org: String!, $userLogins: [String!], $username: String!)  {
             user(login: $username) {
@@ -54,9 +54,7 @@ async function run() {
             cursor = data.organization.teams.pageInfo.endCursor
         } while (data.organization.teams.pageInfo.hasNextPage)
 
-        let isTeamMember = teams.some((teamName) => {
-            return team.toLowerCase() === teamName.toLowerCase()
-        })
+        const isTeamMember = teams.some((teamName) => inputTeams.includes(teamName.toLowerCase()))
 
         setOutput("teams", teams)
         setOutput("isTeamMember", isTeamMember)
