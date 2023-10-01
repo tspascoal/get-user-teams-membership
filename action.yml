@@ -9,7 +9,7 @@ inputs:
     description: 'Username to get teams or check team membership'
     required: true
   team:
-    description: 'If you specify a team name it will output if the user is a member of that team (case insensitive)'
+    description: 'If you specify a team name it will output if the user is a member of that team (case insensitive). If you specificy multiple teams (CSV) true will be returned if at least member of one of the teams.'
     required: false
     default: ''
   GITHUB_TOKEN:

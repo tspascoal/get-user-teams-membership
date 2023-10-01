@@ -5,24 +5,25 @@ on:
     branches: 'master'
   push:
     branches: 'master'
-  
+
 jobs:
   test:
     runs-on: ubuntu-latest
     env:
       user: tspascoal
       check-team: 'Team-1'
+      check-more-than-one-team: 'Team-No-Users, Team-1'
       check-not-team: 'dummy2314332'
       failed: "false"
       organization: get-user-teams-membership-tests
     steps:
       - uses: actions/checkout@v3
-      
+
       - name: build
-        run: | 
+        run: |
           npm install
           npm run build
-      
+
       - name: Get Token
         id: get_workflow_token
         uses: peter-murray/workflow-application-token-action@v2
@@ -36,9 +37,9 @@ jobs:
         id: get-teams
         with:
           organization: ${{ env.organization }}
-          username: tspascoal      
+          username: tspascoal
           GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
-          
+
       - name: validate teams
         run: |
             echo "found teams ${{ steps.get-teams.outputs.teams }}"
@@ -51,7 +52,7 @@ jobs:
             if diff \
               < $(echo '["Team-1","Team-Secret","Parent","Child"]' | jq --sort-keys .) \
               < $(echo '${{ steps.get-teams.outputs.teams }}' | jq --sort-keys .) ; then
-              
+
               echo 'Teams mismatch ${{ steps.get-teams.outputs.teams }}' >> $GITHUB_SUMMARY
               failed="true"
             fi
@@ -66,11 +67,28 @@ jobs:
           username: tspascoal
           team: ${{ env.check-team }}
           GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
-          
+
       - name: Not a team member? Fail
         if: ${{ steps.check-teams-success.outputs.isTeamMember == 'false' }}
         run: |
-          echo "failed=true" >> $$GITHUB_ENV       
+          echo "failed=true" >> $$GITHUB_ENV
+
+      #################### Check if it belongs to at least one of two teams
+      - name: check if member of ${{ env.check-more-than-one-team }}
+        uses: ./
+        id: check-more-than-one-team-success
+        with:
+          organization: ${{ env.organization }}
+          username: tspascoal
+          team: ${{ env.check-more-than-one-team }}
+          GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+
+      - name: Not a team member in at least one of the teams? Fail
+        if: ${{ steps.check-more-than-one-team-success.outputs.isTeamMember == 'false' }}
+        run: |
+          echo "Expected to belong to at least one team. Failing"
+          echo "failed=true" >> $$GITHUB_ENV
+      ####################
 
       - name: check if member of ${{ env.check-not-team }} should not be
         uses: ./
@@ -80,7 +98,6 @@ jobs:
           username: tspascoal
           team: ${{ env.check-not-team }}
           GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
-          
 
       - name: Dummy Team membership? Fail
         if: ${{ steps.check-not-team.outputs.isTeamMember == 'true' }}
@@ -91,4 +108,4 @@ jobs:
         if: ${{ env.failed == 'true' }}
         run:
           exit 1
-          
+

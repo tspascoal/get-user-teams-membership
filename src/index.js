@@ -11,7 +11,7 @@ async function run() {
 
         const organization = getInput("organization") || context.repo.owner
         const username = getInput("username")
-        const inputTeams = getInput("team").trim().toLowerCase().split(",").filter(team => team)
+        const inputTeams = getInput("team").trim().toLowerCase().split(",").map(item => item.trim())
 
         console.log(`Getting teams for ${username} in org ${organization}.${inputTeams.length ? ` Will check if belongs to one of [${inputTeams.join(",")}]` : ''}`)
 
