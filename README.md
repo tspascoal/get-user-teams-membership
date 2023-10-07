@@ -13,7 +13,7 @@ It emits two outputs which are available via the `steps` [output context](https:
 See [action.yml](action.yml)
 
 ```yaml
-- uses: tspascoal/get-user-teams-membership@v2
+- uses: tspascoal/get-user-teams-membership@v3
   with:
     username: # The github username for which we want to fetch teams membership in a given organization.
     organization: # optional. Default value ${{ github.repository_owner }} 
@@ -43,7 +43,7 @@ Checks if the user who triggered the worfklow (actor) belongs to one of two team
 and if not adds a label to the pull request to signal it's an external contribution.
 
 ```yaml
--  uses: tspascoal/get-user-teams-membership@v2
+-  uses: tspascoal/get-user-teams-membership@v3
    id: actorTeams
    with:
      username: ${{ github.actor }}
@@ -58,7 +58,7 @@ and if not adds a label to the pull request to signal it's an external contribut
 Checks if the user who triggered the workflow (actor) doesn't belong to the `octocats` or `testing` team
 
 ```yaml
--  uses: tspascoal/get-user-teams-membership@v2
+-  uses: tspascoal/get-user-teams-membership@v3
    id: checkUserMember
    with:
      username: ${{ github.actor }}
