@@ -4,3 +4,13 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "monthly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/" # Location of package manifests
+    rebase-strategy: disabled
+    schedule:
+      interval: "monthly"
+    groups:
+      all:
+        patterns:
+        - '*'
