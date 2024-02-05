@@ -9,6 +9,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    
     env:
       user: tspascoal
       check-team: 'Team-1'
@@ -17,7 +19,7 @@ jobs:
       failed: "false"
       organization: get-user-teams-membership-tests
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: build
         run: |
@@ -26,7 +28,7 @@ jobs:
 
       - name: Get Token
         id: get_workflow_token
-        uses: peter-murray/workflow-application-token-action@v2
+        uses: peter-murray/workflow-application-token-action@v3
         with:
           organization: ${{ env.organization }}
           application_id: ${{ secrets.APPLICATION_ID }}
