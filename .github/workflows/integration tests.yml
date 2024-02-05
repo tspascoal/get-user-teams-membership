@@ -9,6 +9,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    if: github.actor != 'dependabot[bot]'
+    
     env:
       user: tspascoal
       check-team: 'Team-1'
