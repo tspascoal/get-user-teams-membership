@@ -48,7 +48,7 @@ and if not adds a label to the pull request to signal it's an external contribut
    with:
      username: ${{ github.actor }}
      GITHUB_TOKEN: ${{ secrets.PAT }}
-- if: ${{ !(contains(steps.actorTeams.outputs.teams, 'A team members') || contains(steps.actorTeams.outputs.teams.teams, 'A team admins')) }}
+- if: ${{ !(contains(steps.actorTeams.outputs.teams, 'A team members') || contains(steps.actorTeams.outputs.teams, 'A team admins')) }}
   name: Label PR as external contribution
   ...  
 ```
