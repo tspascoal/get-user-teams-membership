@@ -19,7 +19,7 @@ jobs:
       failed: "false"
       organization: get-user-teams-membership-tests
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: build
         run: |
