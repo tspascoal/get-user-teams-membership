@@ -10,7 +10,7 @@ async function run() {
         const api = getOctokit(getInput("GITHUB_TOKEN", { required: true }), {})
 
         const organization = getInput("organization") || context.repo.owner
-        const username = getInput("username")
+        const username = getInput("username", { required: true })
         const inputTeams = getInput("team").trim().toLowerCase().split(",").map(item => item.trim())
 
         console.log(`Getting teams for ${username} in org ${organization}.${inputTeams.length ? ` Will check if belongs to one of [${inputTeams.join(",")}]` : ''}`)
