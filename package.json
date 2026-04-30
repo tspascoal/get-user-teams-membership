@@ -1,6 +1,6 @@
 {
   "name": "get-user-teams-membership",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "GitHub Action to get a list a user teams membership",
   "main": "dist/index.js",
   "scripts": {
