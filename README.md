@@ -6,7 +6,7 @@ It can also be optionally used to check if the user belongs to a given team
 It emits two outputs which are available via the `steps` [output context](https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#steps-context)
 
 * `teams` - Array with the list of teams the user belongs (since it's array you can check if a user belongs to a team using [contains](https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contains) function)
-* `isTeamMember` - A boolean indicating if a user belongs to a given team (always false if `team` parameter is not used)
+* `isTeamMember` - A string (`'true'` or `'false'`) indicating if a user belongs to a given team (always `'false'` if `team` parameter is not used). **Note:** Although this represents a boolean concept, GitHub Actions outputs are always strings, so always compare against the string values `'true'` or `'false'` (e.g. `steps.checkUserMember.outputs.isTeamMember == 'true'`) rather than a boolean literal.
 
 # Usage
 
