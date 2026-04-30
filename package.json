@@ -4,7 +4,7 @@
   "description": "GitHub Action to get a list a user teams membership",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
     "build": "npx ncc build src/index.js -m -o dist"
   },
   "keywords": [],
@@ -19,6 +19,7 @@
     "@actions/github": "^9.1.1"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.38.4"
+    "@vercel/ncc": "^0.38.4",
+    "vitest": "^4.1.5"
   }
 }

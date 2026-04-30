@@ -24,6 +24,8 @@ This repository is a JavaScript GitHub Action that queries organization team mem
 ## Build And Validation
 
 - Install deps: `npm ci`
+- Update tests whenever behavior, inputs/outputs, or error handling changes (add or adjust coverage as needed).
+- Run tests before considering changes complete: `npm test`
 - Build bundle: `npm run build`
 - Validate examples and docs are still accurate in [README.md](README.md).
 
