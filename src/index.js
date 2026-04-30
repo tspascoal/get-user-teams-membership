@@ -1,4 +1,4 @@
-import { getInput, setOutput, setFailed } from '@actions/core'
+import { getInput, setOutput, setFailed, debug } from '@actions/core'
 import { getOctokit, context } from '@actions/github'
 
 run()
@@ -20,7 +20,7 @@ async function run() {
                 id
             }
             organization(login: $org) {
-              teams (first:1, userLogins: $userLogins, after: $cursor) { 
+              teams (first:100, userLogins: $userLogins, after: $cursor) { 
                   nodes {
                     name
                 }
@@ -52,6 +52,8 @@ async function run() {
             }))
 
             cursor = data.organization.teams.pageInfo.endCursor
+
+            debug(`Got teams: ${teams.join(",")}. Has next page: ${data.organization.teams.pageInfo.hasNextPage}`)
         } while (data.organization.teams.pageInfo.hasNextPage)
 
         const isTeamMember = teams.some((teamName) => inputTeams.includes(teamName.toLowerCase()))
