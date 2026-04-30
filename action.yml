@@ -1,4 +1,4 @@
-name: 'login-teams-membership'
+name: 'get-user-teams-membership'
 description: 'Get a user teams membership in an organization'
 inputs:
   organization: 
