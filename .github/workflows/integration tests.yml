@@ -32,7 +32,7 @@ jobs:
         id: get_workflow_token
         uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ secrets.APPLICATION_ID }}
+          client-id: ${{ vars.CLIENT_ID }}
           private-key: ${{ secrets.APPLICATION_PRIVATE_KEY }}
           owner: ${{ env.organization }}
 
@@ -75,7 +75,8 @@ jobs:
       - name: Not a team member? Fail
         if: ${{ steps.check-teams-success.outputs.isTeamMember == 'false' }}
         run: |
-          echo "failed=true" >> $$GITHUB_ENV
+          echo "Expected to belong to ${{ env.check-team }}. Failing" >> $GITHUB_SUMMARY
+          echo "failed=true" >> $GITHUB_ENV
 
       #################### Check if it belongs to at least one of two teams
       - name: check if member of ${{ env.check-more-than-one-team }}
@@ -90,7 +91,7 @@ jobs:
       - name: Not a team member in at least one of the teams? Fail
         if: ${{ steps.check-more-than-one-team-success.outputs.isTeamMember == 'false' }}
         run: |
-          echo "Expected to belong to at least one team. Failing"
+          echo "Expected to belong to at least one team. Failing" >> $GITHUB_SUMMARY
           echo "failed=true" >> $$GITHUB_ENV
       ####################
 
@@ -106,7 +107,8 @@ jobs:
       - name: Dummy Team membership? Fail
         if: ${{ steps.check-not-team.outputs.isTeamMember == 'true' }}
         run: |
-          echo "failed=true" >> $$GITHUB_ENV
+          echo "Should not belong to ${{ env.check-not-team }}. Failing" >> $GITHUB_SUMMARY
+          echo "failed=true" >> $GITHUB_ENV
 
       - name: Tests failed?
         if: ${{ env.failed == 'true' }}
