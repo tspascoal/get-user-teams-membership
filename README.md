@@ -13,7 +13,7 @@ It emits two outputs which are available via the `steps` [output context](https:
 See [action.yml](action.yml)
 
 ```yaml
-- uses: tspascoal/get-user-teams-membership@v3
+- uses: tspascoal/get-user-teams-membership@v4
   with:
     username: # The github username for which we want to fetch teams membership in a given organization.
     organization: # optional. Default value ${{ github.repository_owner }} 
@@ -22,6 +22,11 @@ See [action.yml](action.yml)
           # If you just want to check membership of a particular team. (only team name, don't include orgname)
     GITHUB_TOKEN: # Personal access token used to query github (Requires scope: `read:org`)
 ```
+
+  > [!WARNING]
+  > If you see a warning like `Node.js 20 actions are deprecated... tspascoal/get-user-teams-membership@v3 ...`, update your workflow to `tspascoal/get-user-teams-membership@v4`.
+  >
+  > `v4` has been upgraded to run on Node.js 24 and is the recommended version.
 
 ## Requirements
 
@@ -46,7 +51,7 @@ Checks if the user who triggered the worfklow (actor) belongs to one of two team
 and if not adds a label to the pull request to signal it's an external contribution.
 
 ```yaml
--  uses: tspascoal/get-user-teams-membership@v3
+-  uses: tspascoal/get-user-teams-membership@v4
    id: actorTeams
    with:
      username: ${{ github.actor }}
@@ -61,7 +66,7 @@ and if not adds a label to the pull request to signal it's an external contribut
 Checks if the user who triggered the workflow (actor) doesn't belong to the `octocats` or `testing` team
 
 ```yaml
--  uses: tspascoal/get-user-teams-membership@v3
+-  uses: tspascoal/get-user-teams-membership@v4
    id: checkUserMember
    with:
      username: ${{ github.actor }}
@@ -84,7 +89,7 @@ The GitHub App must have `Organization permissions > Members > Read-only` permis
     app-id: ${{ vars.APP_ID }}
     private-key: ${{ secrets.PRIVATE_KEY }}
     owner: ${{ github.repository_owner }}
-- uses: tspascoal/get-user-teams-membership@v3
+- uses: tspascoal/get-user-teams-membership@v4
   id: checkUserMember
   with:
     username: ${{ github.actor }}

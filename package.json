@@ -15,8 +15,8 @@
     "url": "https://github.com/tspascoal/get-user-teams-membership"
   },
   "dependencies": {
-    "@actions/core": "^3.0.0",
-    "@actions/github": "^9.0.0"
+    "@actions/core": "^3.0.1",
+    "@actions/github": "^9.1.1"
   },
   "devDependencies": {
     "@vercel/ncc": "^0.38.4"
