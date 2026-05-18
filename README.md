@@ -20,6 +20,7 @@ See [action.yml](action.yml)
                   # Organization to get membership from.
     team: # optional. Check if user belong to this team. 
           # If you just want to check membership of a particular team. (only team name, don't include orgname)
+    useTeamSlug: # optional. If set to true, the action will use team slugs instead of team names for membership checks
     GITHUB_TOKEN: # Personal access token used to query github (Requires scope: `read:org`)
 ```
 

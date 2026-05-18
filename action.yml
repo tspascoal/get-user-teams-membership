@@ -12,6 +12,10 @@ inputs:
     description: 'If you specify a team name it will output if the user is a member of that team (case insensitive). If you specificy multiple teams (CSV) true will be returned if at least member of one of the teams.'
     required: false
     default: ''
+  use_team_slug:
+    description: 'If set to true, the action will use team slugs instead of team names for membership checks. This is useful if you have teams with same name but different parent teams. (default: false)'
+    required: false
+    default: 'false'
   GITHUB_TOKEN:
     description: 'GITHUB_TOKEN'
     required: true
