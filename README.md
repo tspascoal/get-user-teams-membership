@@ -18,8 +18,10 @@ See [action.yml](action.yml)
     username: # The github username for which we want to fetch teams membership in a given organization.
     organization: # optional. Default value ${{ github.repository_owner }} 
                   # Organization to get membership from.
-    team: # optional. Check if user belong to this team. 
-          # If you just want to check membership of a particular team. (only team name, don't include orgname)
+    team: # optional. Check if user belong to this team (team name or slug, depending on use_team_slug). 
+          # If you just want to check membership of a particular team. (only team name/slug, don't include orgname)
+    use_team_slug: # optional. If set to true, the action will use team slugs instead of team names.
+                   # When enabled, the team input and the teams output will use slugs rather than display names. (default: false)
     GITHUB_TOKEN: # Personal access token used to query github (Requires scope: `read:org`)
 ```
 

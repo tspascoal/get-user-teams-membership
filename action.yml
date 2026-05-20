@@ -9,9 +9,13 @@ inputs:
     description: 'Username to get teams or check team membership'
     required: true
   team:
-    description: 'If you specify a team name it will output if the user is a member of that team (case insensitive). If you specificy multiple teams (CSV) true will be returned if at least member of one of the teams.'
+    description: 'If you specify a team name (or slug when use_team_slug is true) it will output if the user is a member of that team (case insensitive). If you specificy multiple teams (CSV) true will be returned if at least member of one of the teams. Note: when use_team_slug is true, provide slugs here instead of display names.'
     required: false
     default: ''
+  use_team_slug:
+    description: 'If set to true, the action will use team slugs instead of team names. When enabled, the team input should be provided as slugs and the teams output will also contain slugs rather than display names. This is useful if you have teams with the same display name but different parent teams. (default: false)'
+    required: false
+    default: 'false'
   GITHUB_TOKEN:
     description: 'GITHUB_TOKEN'
     required: true
