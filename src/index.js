@@ -1,4 +1,4 @@
-import { getInput, setOutput, setFailed, debug } from '@actions/core'
+import { getInput, getBooleanInput, setOutput, setFailed, debug } from '@actions/core'
 import { getOctokit, context } from '@actions/github'
 
 export async function fetchUserTeams(api, organization, username, useTeamSlug) {
@@ -67,7 +67,7 @@ async function run() {
         const organization = getInput("organization") || context.repo.owner
         const username = getInput("username", { required: true })
         const inputTeams = parseTeamInput(getInput("team"))
-        const useTeamSlug = getInput("use_team_slug") === 'true'
+        const useTeamSlug = getBooleanInput('use_team_slug')
 
         console.log(`Getting teams for ${username} in org ${organization}.${inputTeams.length ? ` Will check if belongs to one of [${inputTeams.join(",")}]` : ''}`)
 

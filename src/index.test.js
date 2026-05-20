@@ -155,6 +155,48 @@ describe('fetchUserTeams', () => {
         expect(teams).toEqual([])
     })
 
+    it('should fetch team slugs when useTeamSlug is true', async () => {
+        mockApi.graphql.mockResolvedValueOnce({
+            organization: {
+                teams: {
+                    nodes: [
+                        { slug: 'team-a', name: 'Team A' },
+                        { slug: 'team-b', name: 'Team B' }
+                    ],
+                    pageInfo: {
+                        hasNextPage: false,
+                        endCursor: null
+                    }
+                }
+            }
+        })
+
+        const teams = await fetchUserTeams(mockApi, 'myorg', 'john', true)
+        expect(teams).toEqual(['team-a', 'team-b'])
+        expect(mockApi.graphql).toHaveBeenCalledTimes(1)
+    })
+
+    it('should check membership by slug when useTeamSlug is true', async () => {
+        mockApi.graphql.mockResolvedValueOnce({
+            organization: {
+                teams: {
+                    nodes: [
+                        { slug: 'team-a', name: 'Team A' },
+                        { slug: 'team-b', name: 'Team B' }
+                    ],
+                    pageInfo: {
+                        hasNextPage: false,
+                        endCursor: null
+                    }
+                }
+            }
+        })
+
+        const teams = await fetchUserTeams(mockApi, 'myorg', 'john', true)
+        expect(checkTeamMembership(teams, ['team-a'])).toBe(true)
+        expect(checkTeamMembership(teams, ['team a'])).toBe(false)
+    })
+
     it('should throw error when user does not exist', async () => {
         const error = new Error('Could not resolve to a User with the login of \'nonexistent\'.')
         mockApi.graphql.mockRejectedValueOnce(error)
