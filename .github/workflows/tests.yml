@@ -18,7 +18,7 @@ jobs:
     env:
       user: tspascoal
       check-team: 'Team-1'
-      check-team-slug: 'team-1'
+      check-team-slug: 'team-with-space'
       check-more-than-one-team: 'Team-No-Users, Team-1'
       check-not-team: 'dummy2314332'
       failed: "false"
