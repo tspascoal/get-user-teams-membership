@@ -18,6 +18,7 @@ jobs:
     env:
       user: tspascoal
       check-team: 'Team-1'
+      check-team-slug: 'team-with-space'
       check-more-than-one-team: 'Team-No-Users, Team-1'
       check-not-team: 'dummy2314332'
       failed: "false"
@@ -51,13 +52,13 @@ jobs:
         run: |
             echo "found teams ${{ steps.get-teams.outputs.teams }}"
             numberTeams=$(echo '${{ steps.get-teams.outputs.teams}}' | jq length)
-            if [ $numberTeams != 4 ]; then
-              echo "Expected 4 team  membership for ${{ env.user }}" >> $GITHUB_SUMMARY
+            if [ $numberTeams != 5 ]; then
+              echo "Expected 5 team  membership for ${{ env.user }}" >> $GITHUB_SUMMARY
               failed="true"
             fi
 
             if diff \
-              < $(echo '["Team-1","Team-Secret","Parent","Child"]' | jq --sort-keys .) \
+              < $(echo '["Team-1","Team-Secret","Parent","Child", "team with space"]' | jq --sort-keys .) \
               < $(echo '${{ steps.get-teams.outputs.teams }}' | jq --sort-keys .) ; then
 
               echo 'Teams mismatch ${{ steps.get-teams.outputs.teams }}' >> $GITHUB_SUMMARY
@@ -79,6 +80,22 @@ jobs:
         if: ${{ steps.check-teams-success.outputs.isTeamMember == 'false' }}
         run: |
           echo "Expected to belong to ${{ env.check-team }}. Failing" >> $GITHUB_SUMMARY
+          echo "failed=true" >> $GITHUB_ENV
+
+      - name: check if member of ${{ env.check-team-slug }} by slug
+        uses: ./
+        id: check-team-slug-success
+        with:
+          organization: ${{ env.organization }}
+          username: tspascoal
+          team: ${{ env.check-team-slug }}
+          use_team_slug: true
+          GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
+
+      - name: Not a team member by slug? Fail
+        if: ${{ steps.check-team-slug-success.outputs.isTeamMember == 'false' }}
+        run: |
+          echo "Expected to belong to ${{ env.check-team-slug }} by slug. Failing" >> $GITHUB_SUMMARY
           echo "failed=true" >> $GITHUB_ENV
 
       #################### Check if it belongs to at least one of two teams
@@ -117,4 +134,3 @@ jobs:
         if: ${{ env.failed == 'true' }}
         run:
           exit 1
-

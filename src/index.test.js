@@ -84,8 +84,8 @@ describe('fetchUserTeams', () => {
             organization: {
                 teams: {
                     nodes: [
-                        { name: 'Team A' },
-                        { name: 'Team B' }
+                        { slug: 'team-a', name: 'Team A' },
+                        { slug: 'team-b', name: 'Team B' }
                     ],
                     pageInfo: {
                         hasNextPage: false,
@@ -95,7 +95,7 @@ describe('fetchUserTeams', () => {
             }
         })
 
-        const teams = await fetchUserTeams(mockApi, 'myorg', 'john')
+        const teams = await fetchUserTeams(mockApi, 'myorg', 'john', false)
         expect(teams).toEqual(['Team A', 'Team B'])
         expect(mockApi.graphql).toHaveBeenCalledTimes(1)
     })
@@ -106,8 +106,8 @@ describe('fetchUserTeams', () => {
             organization: {
                 teams: {
                     nodes: [
-                        { name: 'Team A' },
-                        { name: 'Team B' }
+                        { slug: 'team-a', name: 'Team A' },
+                        { slug: 'team-b', name: 'Team B' }
                     ],
                     pageInfo: {
                         hasNextPage: true,
@@ -122,8 +122,8 @@ describe('fetchUserTeams', () => {
             organization: {
                 teams: {
                     nodes: [
-                        { name: 'Team C' },
-                        { name: 'Team D' }
+                        { slug: 'team-c', name: 'Team C' },
+                        { slug: 'team-d', name: 'Team D' }
                     ],
                     pageInfo: {
                         hasNextPage: false,
@@ -133,7 +133,7 @@ describe('fetchUserTeams', () => {
             }
         })
 
-        const teams = await fetchUserTeams(mockApi, 'myorg', 'john')
+        const teams = await fetchUserTeams(mockApi, 'myorg', 'john', false)
         expect(teams).toEqual(['Team A', 'Team B', 'Team C', 'Team D'])
         expect(mockApi.graphql).toHaveBeenCalledTimes(2)
     })
@@ -151,15 +151,57 @@ describe('fetchUserTeams', () => {
             }
         })
 
-        const teams = await fetchUserTeams(mockApi, 'myorg', 'john')
+        const teams = await fetchUserTeams(mockApi, 'myorg', 'john', false)
         expect(teams).toEqual([])
+    })
+
+    it('should fetch team slugs when useTeamSlug is true', async () => {
+        mockApi.graphql.mockResolvedValueOnce({
+            organization: {
+                teams: {
+                    nodes: [
+                        { slug: 'team-a', name: 'Team A' },
+                        { slug: 'team-b', name: 'Team B' }
+                    ],
+                    pageInfo: {
+                        hasNextPage: false,
+                        endCursor: null
+                    }
+                }
+            }
+        })
+
+        const teams = await fetchUserTeams(mockApi, 'myorg', 'john', true)
+        expect(teams).toEqual(['team-a', 'team-b'])
+        expect(mockApi.graphql).toHaveBeenCalledTimes(1)
+    })
+
+    it('should check membership by slug when useTeamSlug is true', async () => {
+        mockApi.graphql.mockResolvedValueOnce({
+            organization: {
+                teams: {
+                    nodes: [
+                        { slug: 'team-a', name: 'Team A' },
+                        { slug: 'team-b', name: 'Team B' }
+                    ],
+                    pageInfo: {
+                        hasNextPage: false,
+                        endCursor: null
+                    }
+                }
+            }
+        })
+
+        const teams = await fetchUserTeams(mockApi, 'myorg', 'john', true)
+        expect(checkTeamMembership(teams, ['team-a'])).toBe(true)
+        expect(checkTeamMembership(teams, ['team a'])).toBe(false)
     })
 
     it('should throw error when user does not exist', async () => {
         const error = new Error('Could not resolve to a User with the login of \'nonexistent\'.')
         mockApi.graphql.mockRejectedValueOnce(error)
 
-        await expect(fetchUserTeams(mockApi, 'myorg', 'nonexistent')).rejects.toThrow()
+        await expect(fetchUserTeams(mockApi, 'myorg', 'nonexistent', false)).rejects.toThrow()
     })
 
     it('should pass correct query parameters', async () => {
@@ -175,7 +217,7 @@ describe('fetchUserTeams', () => {
             }
         })
 
-        await fetchUserTeams(mockApi, 'myorg', 'john')
+        await fetchUserTeams(mockApi, 'myorg', 'john', false)
 
         expect(mockApi.graphql).toHaveBeenCalledWith(
             expect.stringContaining('query($cursor:'),
@@ -201,7 +243,7 @@ describe('fetchUserTeams', () => {
             }
         })
 
-        await fetchUserTeams(mockApi, 'myorg', 'john')
+        await fetchUserTeams(mockApi, 'myorg', 'john', false)
 
         const firstCallQuery = mockApi.graphql.mock.calls[0][0]
         expect(firstCallQuery).toContain('teams (first:100')
@@ -232,7 +274,7 @@ describe('fetchUserTeams', () => {
             }
         })
 
-        await fetchUserTeams(mockApi, 'myorg', 'john')
+        await fetchUserTeams(mockApi, 'myorg', 'john', false)
 
         const secondCall = mockApi.graphql.mock.calls[1][1]
         expect(secondCall.cursor).toBe('next-cursor')
