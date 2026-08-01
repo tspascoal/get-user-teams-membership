@@ -22,6 +22,6 @@
     "@emnapi/core": "1.11.2",
     "@emnapi/runtime": "1.11.2",
     "@vercel/ncc": "^0.44.1",
-    "vitest": "^4.1.9"
+    "vitest": "^4.1.10"
   }
 }
