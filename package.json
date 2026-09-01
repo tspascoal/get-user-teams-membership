@@ -21,7 +21,7 @@
   "devDependencies": {
     "@emnapi/core": "1.11.3",
     "@emnapi/runtime": "1.11.3",
-    "@vercel/ncc": "^0.44.1",
+    "@vercel/ncc": "^0.45.0",
     "vitest": "^4.1.10"
   }
 }
