@@ -49,19 +49,20 @@ jobs:
           GITHUB_TOKEN: ${{ steps.get_workflow_token.outputs.token }}
 
       - name: validate teams
+        env:
+          TEAM_LIST: ${{ steps.get-teams.outputs.teams }}
         run: |
-            echo "found teams ${{ steps.get-teams.outputs.teams }}"
-            numberTeams=$(echo '${{ steps.get-teams.outputs.teams}}' | jq length)
+            numberTeams=$(printf '%s' "$TEAM_LIST" | jq length)
             if [ $numberTeams != 5 ]; then
               echo "Expected 5 team  membership for ${{ env.user }}" >> $GITHUB_SUMMARY
               failed="true"
             fi
 
-            if diff \
-              < $(echo '["Team-1","Team-Secret","Parent","Child", "team with space"]' | jq --sort-keys .) \
-              < $(echo '${{ steps.get-teams.outputs.teams }}' | jq --sort-keys .) ; then
+            if ! diff \
+              <(printf '%s\n' '["Team-1","Team-Secret","Parent","Child", "team with space"]' | jq --sort-keys .) \
+              <(printf '%s' "$TEAM_LIST" | jq --sort-keys .) ; then
 
-              echo 'Teams mismatch ${{ steps.get-teams.outputs.teams }}' >> $GITHUB_SUMMARY
+              echo 'Teams mismatch' >> $GITHUB_SUMMARY
               failed="true"
             fi
 
