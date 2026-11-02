@@ -66,7 +66,7 @@ jobs:
               failed="true"
             fi
 
-            echo "failed=$failed" >> $$GITHUB_ENV
+            echo "failed=$failed" >> $GITHUB_ENV
 
       - name: check if member of ${{ env.check-team }}
         uses: ./
