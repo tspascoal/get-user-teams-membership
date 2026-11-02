@@ -5,7 +5,7 @@ It can also be optionally used to check if the user belongs to a given team
 
 It emits two outputs which are available via the `steps` [output context](https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#steps-context)
 
-* `teams` - Array with the list of teams the user belongs (since it's array you can check if a user belongs to a team using [contains](https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contains) function). This will have the team name or the team slug depending on value of `use_team_slug` value.
+* `teams` - A JSON-serialized array with the list of teams the user belongs. To check membership using the [contains](https://docs.github.com/en/actions/reference/context-and-expression-syntax-for-github-actions#contains) function, first parse it with `fromJSON()` (for example, `contains(fromJSON(steps.checkUserMember.outputs.teams), 'octocats')`). This will have the team name or the team slug depending on value of `use_team_slug` value.
 * `isTeamMember` - A string (`'true'` or `'false'`) indicating if a user belongs to a given team (always `'false'` if `team` parameter is not used). **Note:** Although this represents a boolean concept, GitHub Actions outputs are always strings, so always compare against the string values `'true'` or `'false'` (e.g. `steps.checkUserMember.outputs.isTeamMember == 'true'`) rather than a boolean literal.
 
 # Usage
@@ -58,7 +58,7 @@ and if not adds a label to the pull request to signal it's an external contribut
    with:
      username: ${{ github.actor }}
      GITHUB_TOKEN: ${{ secrets.PAT }}
-- if: ${{ !(contains(steps.actorTeams.outputs.teams, 'A team members') || contains(steps.actorTeams.outputs.teams, 'A team admins')) }}
+- if: ${{ !(contains(fromJSON(steps.actorTeams.outputs.teams), 'A team members') || contains(fromJSON(steps.actorTeams.outputs.teams), 'A team admins')) }}
   name: Label PR as external contribution
   ...  
 ```
