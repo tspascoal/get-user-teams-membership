@@ -60,6 +60,10 @@ export function checkTeamMembership(teams, inputTeams) {
     return inputTeams.length > 0 && teams.some((teamName) => inputTeams.includes(teamName.toLowerCase()))
 }
 
+export function formatTeamsLogMessage(username, organization, inputTeams) {
+    return `Getting teams for ${username} in org ${organization}.${inputTeams.length ? ` Will check if belongs to one of [${inputTeams.join(",")}]` : ''}`.replace(/[\r\n]/g, ' ')
+}
+
 async function run() {
     try {
         const api = getOctokit(getInput("GITHUB_TOKEN", { required: true }), {})
@@ -69,7 +73,7 @@ async function run() {
         const inputTeams = parseTeamInput(getInput("team"))
         const useTeamSlug = getBooleanInput('use_team_slug')
 
-        console.log(`Getting teams for ${username} in org ${organization}.${inputTeams.length ? ` Will check if belongs to one of [${inputTeams.join(",")}]` : ''}`)
+        console.log(formatTeamsLogMessage(username, organization, inputTeams))
 
         const teams = await fetchUserTeams(api, organization, username, useTeamSlug)
         const isTeamMember = checkTeamMembership(teams, inputTeams)

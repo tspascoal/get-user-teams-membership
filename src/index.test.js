@@ -1,5 +1,20 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { fetchUserTeams, parseTeamInput, checkTeamMembership } from './index.js'
+import { fetchUserTeams, parseTeamInput, checkTeamMembership, formatTeamsLogMessage } from './index.js'
+
+describe('formatTeamsLogMessage', () => {
+    it('should prevent workflow command injection through input newlines', () => {
+        const message = formatTeamsLogMessage(
+            'attacker\n::set-output name=compromised::true',
+            'myorg\r::warning::injected',
+            ['team\n::error::injected']
+        )
+
+        expect(message).not.toMatch(/[\r\n]/)
+        expect(message).toContain('attacker ::set-output name=compromised::true')
+        expect(message).toContain('myorg ::warning::injected')
+        expect(message).toContain('team ::error::injected')
+    })
+})
 
 describe('parseTeamInput', () => {
     it('should parse single team', () => {
