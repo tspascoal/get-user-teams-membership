@@ -20,7 +20,7 @@ See [action.yml](action.yml)
                   # Organization to get membership from.
     team: # optional. Check if user belong to this team (team name or slug, depending on use_team_slug). 
           # If you just want to check membership of a particular team. (only team name/slug, don't include orgname)
-    use_team_slug: # optional. If set to true, the action will use team slugs instead of team names.
+    use_team_slug: # optional. Recommended: true, to use team slugs instead of team names.
                    # When enabled, the team input and the teams output will use slugs rather than display names. (default: false)
     GITHUB_TOKEN: # Personal access token used to query github (Requires scope: `read:org`)
 ```
@@ -29,6 +29,26 @@ See [action.yml](action.yml)
   > If you see a warning like `Node.js 20 actions are deprecated... tspascoal/get-user-teams-membership@v3 ...`, update your workflow to `tspascoal/get-user-teams-membership@v4`.
   >
   > `v4` has been upgraded to run on Node.js 24 and is the recommended version.
+
+## Recommended: use team slugs comparisoon
+
+**Set `use_team_slug: true`** and use team slugs in the `team` input. The `teams` output will also contain slugs instead of display names. The default remains `false` for backward compatibility.
+
+The `team` input treats commas as separators between alternative teams, not as part of a team name. In display-name mode (`use_team_slug: false`), `team: 'Engineering, Platform'` checks for membership in either `Engineering` or `Platform`, **not** the team named `Engineering, Platform`. This can miss membership in the intended team or falsely match a different team. YAML quotes do not escape the comma for this action.
+
+Use the team's actual slug (from its GitHub team URL) to avoid this ambiguity. For example, if the team named `Engineering, Platform` has the slug `engineering-platform`:
+
+```yaml
+- uses: tspascoal/get-user-teams-membership@v4
+  id: checkUserMember
+  with:
+    username: ${{ github.actor }}
+    use_team_slug: true
+    team: 'engineering-platform'
+    GITHUB_TOKEN: ${{ secrets.PAT }}
+```
+
+To check multiple teams in slug mode, separate their slugs with commas, for example `team: 'engineering-platform,octocats'`.
 
 ## Requirements
 
